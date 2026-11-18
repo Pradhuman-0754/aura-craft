@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ElevenLabs Anime Voice Studio - Hyper-realistic Neural Anime Seiyuu & Character Voice Generation powered by state-of-the-art ElevenLabs narration models.">
+  <title>ElevenLabs Anime Voice Studio // ボイススタジオ</title>
+  
+  <!-- Premium Anime & Cyberpunk Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="anime-theme">
+  <!-- Interactive Floating Sakura & Cyber Sparkles Canvas -->
+  <canvas id="sakuraCanvas" class="sakura-bg-canvas"></canvas>
+
+  <!-- Ambient Cyberpunk Neon Glow Spheres -->
+  <div class="ambient-glow glow-pink"></div>
+  <div class="ambient-glow glow-cyan"></div>
+  <div class="ambient-glow glow-purple"></div>
+
+  <!-- Header & Anime Navigation Bar -->
+  <header class="studio-header">
+    <div class="header-container">
+      
+      <!-- Brand Logo with Japanese Accent -->
+      <div class="brand">
+        <div class="brand-avatar-badge">
+          <span class="brand-kanji">声</span>
+          <span class="sparkle-dot"></span>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title-row">
+            <h1>ELEVENLABS <span class="anime-gradient-text">ANIME</span></h1>
+            <span class="jp-tag">ボイススタジオ</span>
+          </div>
+          <p class="brand-sub">Neural Seiyuu &amp; Voice Narration Engine • 2026 Core</p>
+        </div>
+      </div>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <!-- API Connection Status -->
+        <div class="api-status-pill" id="apiStatusPill" title="Connected to ElevenLabs API">
+          <span class="status-indicator online"></span>
+          <span class="status-label" id="apiStatusText">SEIYUU LINK // ACTIVE</span>
+        </div>
+
+        <!-- API Key Settings Trigger -->
+        <button class="cyber-btn-outline" id="openSettingsBtn" aria-label="API Key Settings" title="Configure API Key">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span>KEY SETTINGS // 設定</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="studio-container">
+    
+    <!-- Hero Anime Studio Banner -->
+    <section class="anime-hero-card glass-panel">
+      <div class="hero-image-wrap">
+        <img src="assets/anime_hero.jpg" alt="Anime Sound Engineer in Neo-Tokyo Recording Studio" class="hero-cover-img" id="heroBannerImg">
+        <div class="hero-gradient-overlay"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge-row">
+          <span class="cyber-badge pulse"><span class="badge-dot"></span> LIVE NEURAL ENGINE</span>
+          <span class="cyber-badge pink">29+ LANGUAGES</span>
+          <span class="cyber-badge cyan">ZERO LATENCY SYNC</span>
+        </div>
+        <h2 class="hero-headline">BRING YOUR ANIME SCRIPT TO LIFE</h2>
+        <p class="hero-desc">Type or paste any dialogue, incantation, or story. Choose your anime model &amp; Seiyuu voice to generate hyper-expressive cinematic speech in seconds.</p>
+      </div>
+    </section>
+
+    <!-- Top Configuration Bar: Model Selection & Seiyuu Roster -->
+    <section class="config-bar glass-panel" aria-label="Audio Configuration">
+      
+      <!-- Model Selector (Core Requirement) -->
+      <div class="config-group">
+        <div class="config-label-row">
+          <label for="modelSelect" class="config-label">
+            <span class="label-icon">⚙️</span>
+            <span>NARRATION MODEL // 変換モデル</span>
+          </label>
+          <span class="badge-mini model-tag" id="currentModelBadge">Multilingual v2</span>
+        </div>
+        <div class="custom-select-wrapper">
+          <select id="modelSelect" class="studio-select" aria-label="Select ElevenLabs Narration Model">
+            <option value="eleven_multilingual_v2" selected>Eleven Multilingual v2 (Ultra Expressive // 感情豊か・29+言語)</option>
+            <option value="eleven_turbo_v2_5">Eleven Turbo v2.5 (High Speed &amp; Low Latency // 超高速・高音質)</option>
+            <option value="eleven_flash_v2_5">Eleven Flash v2.5 (Real-Time Action // 瞬時ストリーミング)</option>
+            <option value="eleven_monolingual_v1">Eleven English v1 (Classic Anime Dub // 英語アニメ吹替風)</option>
+            <option value="eleven_turbo_v2">Eleven Turbo v2 (Balanced Action // スピード特化)</option>
+            <option value="eleven_multilingual_v1">Eleven Multilingual v1 (Standard Legacy // 基本多言語)</option>
+          </select>
+          <div class="select-chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <p class="field-hint" id="modelDescription">Supreme emotional range, dramatic pauses &amp; cinematic Japanese/English inflection.</p>
+      </div>
+
+      <!-- Quick Character Voice Selector Dropdown (Synced with Cards) -->
+      <div class="config-group">
+        <div class="config-label-row">
+          <label for="voiceSelect" class="config-label">
+            <span class="label-icon">🎙️</span>
+            <span>ANIME SEIYUU VOICE // 声優プリセット</span>
+          </label>
+          <span class="badge-mini voice-gender" id="voiceGenderBadge">Tsundere Idol</span>
+        </div>
+        <div class="custom-select-wrapper">
+          <select id="voiceSelect" class="studio-select" aria-label="Select Anime Seiyuu Voice">
+            <option value="pFZP5JQG7iQjIQuC4Bku" selected>🌸 Sakura (サクラ) — Tsundere / Magical Girl (Lily)</option>
+            <option value="iP95p4xoKVk53GoZ742B">⚡ Ren (レン) — Shonen Cyber Hero (Chris)</option>
+            <option value="JBFqnCBsd6RMkjVDRZzb">🌙 Kage (影 - カゲ) — Dark Sorcerer / Senpai (George)</option>
+            <option value="Xb7hH8MSUJpSbSDYk0k2">🍙 Chibi Aoi (アオイ) — Kawaii Vtuber Mascot (Alice)</option>
+            <option value="nPczCjzI2devNBz1VWQn">⚔️ Takeshi (タケシ) — Mecha Commander (Brian)</option>
+            <option value="cgSgspJ2msm6clMCkdW9">🔮 Celeste (セレスト) — Astral Empress (Jessica)</option>
+            <option value="onwK4e9ZLuTAKqWW03F9">🎙️ Daniel (ダン) — Anime Narrator / Host (Daniel)</option>
+            <option value="custom">⚙️ Custom Voice ID // 独自ID指定...</option>
+          </select>
+          <div class="select-chevron">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <p class="field-hint" id="voiceDescription">Sweet, spirited &amp; emotionally vibrant voice perfect for heroines and idols.</p>
+
+        <!-- Hidden Custom Voice ID Input -->
+        <div class="custom-voice-row" id="customVoiceRow" style="display: none;">
+          <input type="text" id="customVoiceInput" class="studio-input" placeholder="Enter custom ElevenLabs Voice ID (e.g. 21m00Tcm4TlvDq8ikWAM)...">
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Interactive Anime Seiyuu Character Grid Cards -->
+    <section class="character-deck glass-panel" aria-label="Anime Character Cards">
+      <div class="deck-header">
+        <div class="deck-title">
+          <span class="sparkle-icon">✨</span>
+          <h3>SELECT YOUR ANIME CHARACTER // 声優キャスト選択</h3>
+        </div>
+        <span class="deck-subtitle">Click any avatar to instantly equip their vocal profile</span>
+      </div>
+
+      <div class="character-cards-grid" id="characterCardsGrid">
+        
+        <!-- Sakura -->
+        <button type="button" class="char-card active" data-voice-id="pFZP5JQG7iQjIQuC4Bku" data-char="sakura">
+          <div class="char-avatar-box">
+            <img src="assets/sakura.jpg" alt="Sakura Anime Avatar" class="char-avatar-img">
+            <span class="char-badge-dot"></span>
+          </div>
+          <div class="char-meta">
+            <div class="char-name-row">
+              <span class="char-name">Sakura</span>
+              <span class="char-jp">サクラ</span>
+            </div>
+            <span class="char-role">🌸 Tsundere Idol</span>
+          </div>
+        </button>
+
+        <!-- Ren -->
+        <button type="button" class="char-card" data-voice-id="iP95p4xoKVk53GoZ742B" data-char="ren">
+          <div class="char-avatar-box">
+            <img src="assets/ren.jpg" alt="Ren Anime Avatar" class="char-avatar-img">
+            <span class="char-badge-dot"></span>
+          </div>
+          <div class="char-meta">
+            <div class="char-name-row">
+              <span class="char-name">Ren</span>
+              <span class="char-jp">レン</span>
+            </div>
+            <span class="char-role">⚡ Shonen Protagonist</span>
+          </div>
+        </button>
+
+        <!-- Kage -->
+        <button type="button" class="char-card" data-voice-id="JBFqnCBsd6RMkjVDRZzb" data-char="kage">
+          <div class="char-avatar-box avatar-fallback kage-bg">
+            <span class="char-avatar-symbol">🌙</span>
+            <span class="char-badge-dot"></span>
+          </div>
+          <div class="char-meta">
+            <div class="char-name-row">
+              <span class="char-name">Kage</span>
+              <span class="char-jp">カゲ</span>
+            </div>
+            <span class="char-role">🗡️ Dark Sorcerer</span>
+          </div>
+        </button>
+
+        <!-- Aoi -->
+        <button type="button" class="char-card" data-voice-id="Xb7hH8MSUJpSbSDYk0k2" data-char="aoi">
+          <div class="char-avatar-box avatar-fallback aoi-bg">
+            <span class="char-avatar-symbol">🍙</span>
+            <span class="char-badge-dot"></span>
+          </div>
+          <div class="char-meta">
+            <div class="char-name-row">
+              <span class="char-name">Aoi</span>
+              <span class="char-jp">アオイ</span>
+            </div>
+            <span class="char-role">🎀 Kawaii Vtuber</span>
+          </div>
+        </button>
+
+        <!-- Takeshi -->
+        <button type="button" class="char-card" data-voice-id="nPczCjzI2devNBz1VWQn" data-char="takeshi">
+          <div class="char-avatar-box avatar-fallback takeshi-bg">
+            <span class="char-avatar-symbol">⚔️</span>
+            <span class="char-badge-dot"></span>
+          </div>
+          <div class="char-meta">
+            <div class="char-name-row">
+              <span class="char-name">Takeshi</span>
+              <span class="char-jp">タケシ</span>
+            </div>
+            <span class="char-role">🛡️ Mecha Commander</span>
+          </div>
+        </button>
+
+        <!-- Celeste -->
+        <button type="button" class="char-card" data-voice-id="cgSgspJ2msm6clMCkdW9" data-char="celeste">
+          <div class="char-avatar-box avatar-fallback celeste-bg">
+            <span class="char-avatar-symbol">🔮</span>
+            <span class="char-badge-dot"></span>
+          </div>
+          <div class="char-meta">
+            <div class="char-name-row">
+              <span class="char-name">Celeste</span>
+              <span class="char-jp">セレスト</span>
+            </div>
+            <span class="char-role">👑 Astral Empress</span>
+          </div>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- Main Studio Workspace: Text Editor & Audio Player -->
+    <div class="studio-grid">
+      
+      <!-- Left Column: Narration Script Input & Play Trigger -->
+      <section class="editor-section glass-panel">
+        
+        <div class="editor-header">
+          <div class="editor-title">
+            <span class="editor-icon-badge">📜</span>
+            <div>
+              <h2>NARRATION SCRIPT // 台詞テキスト</h2>
+              <span class="editor-sub">Paste or write any text to be narrated by the Seiyuu</span>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="editor-tools">
+            <button type="button" class="tool-btn cyber-tool" id="pasteBtn" title="Paste from clipboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+              <span>PASTE // 貼付</span>
+            </button>
+            <button type="button" class="tool-btn" id="clearBtn" title="Clear text">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>CLEAR</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Anime Dialogue Preset Chips -->
+        <div class="preset-chips" aria-label="Anime Dialogue Presets">
+          <span class="chips-label">Anime Presets:</span>
+          <button type="button" class="chip active-preset" data-sample="shonen">⚔️ Shonen Battle</button>
+          <button type="button" class="chip" data-sample="tsundere">🌸 Tsundere</button>
+          <button type="button" class="chip" data-sample="mecha">🤖 Cyber Mecha</button>
+          <button type="button" class="chip" data-sample="isekai">🔮 Isekai Fantasy</button>
+          <button type="button" class="chip" data-sample="villain">🌙 Dark Overlord</button>
+          <button type="button" class="chip" data-sample="slice">🍙 Slice of Life</button>
+        </div>
+
+        <!-- Textarea Input Field -->
+        <div class="textarea-wrapper">
+          <div class="textarea-corner-tag">SCRIPT INPUT // テキスト</div>
+          <textarea 
+            id="textInput" 
+            class="studio-textarea anime-script-box" 
+            placeholder="Type or paste any text content here that you want ElevenLabs to narrate. Experience hyper-realistic anime intonation, emotional depth, and cinematic pacing..."
+            rows="8"
+            spellcheck="true"
+          >Ore no ban da! Even if the sky shatters and the entire universe stands against me, my spirit will never waver! Let the resonance of our hearts pierce through the heavens! IKUZO—!</textarea>
+        </div>
+
+        <!-- Footer Meta: Character / Word Counts & Hotkey hint -->
+        <div class="editor-footer">
+          <div class="stats-group">
+            <span class="stat-pill" id="charCount">204 characters</span>
+            <span class="stat-divider">•</span>
+            <span class="stat-pill" id="wordCount">34 words</span>
+            <span class="stat-divider">•</span>
+            <span class="stat-pill highlight-pill" id="estTime">~9s speech</span>
+          </div>
+
+          <div class="hotkey-hint">
+            <span class="kbd-glow"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span> to Cast
+          </div>
+        </div>
+
+        <!-- Advanced Voice Sliders Collapsible Toggle -->
+        <details class="advanced-settings-accordion" id="settingsAccordion">
+          <summary class="accordion-header">
+            <div class="accordion-title">
+              <span class="accordion-icon">🎛️</span>
+              <span>ACOUSTIC FINE-TUNING // 感情パラメーター (Stability &amp; Exaggeration)</span>
+            </div>
+            <div class="accordion-chevron">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+          </summary>
+          <div class="accordion-content">
+            <div class="sliders-grid">
+              
+              <!-- Stability Slider -->
+              <div class="slider-box">
+                <div class="slider-info">
+                  <span class="slider-title">Stability (感情表現)</span>
+                  <span class="slider-val" id="stabilityVal">0.45</span>
+                </div>
+                <input type="range" id="stabilitySlider" min="0.0" max="1.0" step="0.05" value="0.45" class="studio-slider">
+                <div class="slider-labels">
+                  <span>Wild / Expressive</span>
+                  <span>Steady / Calm</span>
+                </div>
+              </div>
+
+              <!-- Similarity / Clarity Boost Slider -->
+              <div class="slider-box">
+                <div class="slider-info">
+                  <span class="slider-title">Clarity Boost (透明度)</span>
+                  <span class="slider-val" id="similarityVal">0.80</span>
+                </div>
+                <input type="range" id="similaritySlider" min="0.0" max="1.0" step="0.05" value="0.80" class="studio-slider">
+                <div class="slider-labels">
+                  <span>Soft Texture</span>
+                  <span>Crisp Studio Hi-Fi</span>
+                </div>
+              </div>
+
+              <!-- Style Exaggeration Slider -->
+              <div class="slider-box">
+                <div class="slider-info">
+                  <span class="slider-title">Style Drama (ドラマ度)</span>
+                  <span class="slider-val" id="styleVal">0.25</span>
+                </div>
+                <input type="range" id="styleSlider" min="0.0" max="1.0" step="0.05" value="0.25" class="studio-slider">
+                <div class="slider-labels">
+                  <span>Natural Dialogue</span>
+                  <span>Hyper Anime Drama</span>
+                </div>
+              </div>
+
+              <!-- Speaker Boost Toggle -->
+              <div class="toggle-box">
+                <div class="toggle-info">
+                  <span class="slider-title">Aura Boost (声量強調)</span>
+                  <p class="slider-desc">Enhances presence &amp; volume clarity</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="speakerBoostToggle" checked>
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+            </div>
+          </div>
+        </details>
+
+        <!-- Primary Generation Action Bar (Core Requirement: Play button below input field) -->
+        <div class="action-bar anime-action-bar">
+          <button type="button" id="playBtn" class="btn-anime-glow" aria-label="Start Narration">
+            <span class="btn-sparkle-trail"></span>
+            <span class="btn-icon">
+              <!-- Play Icon -->
+              <svg id="playIconSvg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <!-- Spinner Icon (Hidden by default) -->
+              <svg id="loadingSpinnerSvg" class="spinner-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none;">
+                <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <div class="btn-text-block">
+              <span class="btn-main-text" id="playBtnText">START NARRATION // 詠唱開始</span>
+              <span class="btn-sub-text">Generate with ElevenLabs</span>
+            </div>
+          </button>
+
+          <!-- Generation Status Message -->
+          <div class="generation-status" id="generationStatus">
+            <span class="status-pulse" id="statusPulse" style="display: none;"></span>
+            <span id="generationStatusText">Seiyuu ready to speak</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Live Holo-Terminal Monitor & Audio Visualizer -->
+      <section class="player-section glass-panel">
+        
+        <div class="player-header">
+          <div class="player-title">
+            <span class="holo-dot"></span>
+            <h2>ACOUSTIC MONITOR // 音響モニター</h2>
+          </div>
+          <div class="live-status-tag" id="audioStateTag">STANDBY // 待機中</div>
+        </div>
+
+        <!-- Active Seiyuu Character Hologram Card -->
+        <div class="active-char-banner" id="activeCharBanner">
+          <div class="char-banner-avatar-wrap">
+            <img src="assets/sakura.jpg" alt="Active Voice Character" class="banner-avatar-img" id="activeVoiceAvatar">
+            <div class="sound-ring" id="soundRing"></div>
+          </div>
+          <div class="banner-char-info">
+            <div class="banner-title-line">
+              <h3 class="banner-char-name" id="activeVoiceName">Sakura (サクラ)</h3>
+              <span class="banner-char-badge" id="activeVoiceRole">🌸 Tsundere Idol</span>
+            </div>
+            <p class="banner-char-quote" id="activeVoiceQuote">"B-Baka! Don't get the wrong idea, I'm only narrating because you asked!"</p>
+          </div>
+        </div>
+
+        <!-- Canvas Real-Time Waveform Visualizer -->
+        <div class="visualizer-container anime-vis-wrap">
+          <canvas id="visualizerCanvas" width="600" height="170"></canvas>
+          
+          <div class="visualizer-overlay" id="visualizerEmptyState">
+            <div class="visualizer-empty-icon">
+              <span class="anime-sound-symbol">⚡</span>
+            </div>
+            <p>Click <strong>START NARRATION</strong> to synthesize &amp; visualize voice</p>
+          </div>
+        </div>
+
+        <!-- Active Track Metadata Info -->
+        <div class="track-meta" id="trackMeta">
+          <div class="track-info">
+            <h3 class="track-title" id="trackTitle">No narration generated yet</h3>
+            <p class="track-specs" id="trackSpecs">Select a model &amp; hit play</p>
+          </div>
+          
+          <!-- Download Audio Button -->
+          <button type="button" class="cyber-btn-outline download-btn" id="downloadBtn" title="Download Audio MP3" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>SAVE MP3 // 保存</span>
+          </button>
+        </div>
+
+        <!-- Audio Player Controls -->
+        <div class="custom-player anime-player" id="customPlayer">
+          
+          <!-- Timeline scrubber -->
+          <div class="timeline-container">
+            <span class="time-label font-mono" id="currentTimeLabel">0:00</span>
+            <div class="timeline-bar-wrapper" id="timelineWrapper">
+              <div class="timeline-bar">
+                <div class="timeline-progress" id="timelineProgress"></div>
+                <div class="timeline-handle" id="timelineHandle"></div>
+              </div>
+            </div>
+            <span class="time-label font-mono" id="totalDurationLabel">0:00</span>
+          </div>
+
+          <!-- Playback Action Buttons -->
+          <div class="playback-controls">
+            
+            <div class="speed-selector">
+              <button type="button" class="speed-btn active" data-speed="1.0">1.0x</button>
+              <button type="button" class="speed-btn" data-speed="1.25">1.25x</button>
+              <button type="button" class="speed-btn" data-speed="1.5">1.5x</button>
+            </div>
+
+            <!-- Central Play/Pause Toggle for Generated Audio -->
+            <button type="button" class="audio-play-toggle holo-toggle" id="audioPlayToggle" title="Play / Pause Audio" disabled>
+              <svg id="audioTogglePlaySvg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <svg id="audioTogglePauseSvg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                <rect x="6" y="4" width="4" height="16"/>
+                <rect x="14" y="4" width="4" height="16"/>
+              </svg>
+            </button>
+
+            <!-- Volume Mute & Slider -->
+            <div class="volume-container">
+              <button type="button" class="icon-btn volume-btn" id="volumeBtn" title="Mute / Unmute">
+                <svg id="volumeHighSvg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+                <svg id="volumeMuteSvg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <line x1="23" y1="9" x2="17" y2="15"/>
+                  <line x1="17" y1="9" x2="23" y2="15"/>
+                </svg>
+              </button>
+              <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1" class="volume-range" aria-label="Volume">
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Hidden Native HTML5 Audio Element -->
+        <audio id="nativeAudioElement" preload="auto"></audio>
+
+        <!-- Generation History Section -->
+        <div class="history-container">
+          <div class="history-header">
+            <h4>RECENT RECORDINGS // 履歴 (<span id="historyCount">0</span>)</h4>
+            <button type="button" class="clear-history-btn" id="clearHistoryBtn" style="display:none;">CLEAR ALL</button>
+          </div>
+          <div class="history-list" id="historyList">
+            <div class="history-empty">Generated anime narrations will appear here for instant replay &amp; download.</div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- API Key & Settings Modal -->
+  <div class="modal-backdrop" id="settingsModal" style="display: none;">
+    <div class="modal-card anime-modal glass-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <div>
+            <h3 id="modalTitle">ELEVENLABS API KEY // 認証設定</h3>
+            <p class="modal-subtitle">Your credentials are authenticated directly with ElevenLabs</p>
+          </div>
+        </div>
+        <button type="button" class="modal-close" id="closeSettingsBtn" aria-label="Close Modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <label for="apiKeyInput" class="modal-label">ElevenLabs API Key</label>
+        <div class="api-key-input-wrapper">
+          <input 
+            type="password" 
+            id="apiKeyInput" 
+            class="studio-input font-mono" 
+            value="sk_1bcb39d22e32fc1cde32abdafa6c055d63aa714449a06b8e"
+            placeholder="sk_..."
+          >
+          <button type="button" class="key-visibility-btn" id="toggleKeyVisibilityBtn" title="Toggle Visibility">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <div class="key-status-row">
+          <span class="key-badge active" id="keyValidationBadge">✓ Key Integrated &amp; Active</span>
+          <span class="key-note">xi-api-key ready</span>
+        </div>
+
+        <div class="api-info-box">
+          <div class="info-icon">💡</div>
+          <div class="info-text">
+            <strong>Active Models:</strong> Eleven Multilingual v2, Eleven Turbo v2.5, Eleven Flash v2.5, Eleven English v1, Eleven Turbo v2.
+            Anime Seiyuu profiles mapped to verified neural voices.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="cancelSettingsBtn">Close</button>
+        <button type="button" class="btn-anime-glow" id="saveApiKeyBtn">Save &amp; Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Main JavaScript Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
